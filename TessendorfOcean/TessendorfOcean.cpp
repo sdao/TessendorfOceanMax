@@ -13,10 +13,14 @@
 //***************************************************************************/
 
 #include "TessendorfOcean.h"
+#include "tessendorf.h"
 
 #define TessendorfOcean_CLASS_ID	Class_ID(0x6e25d3e5, 0xa605dbad)
 
 #define PBLOCK_REF	0
+
+#define MIN_WIDTH 1.0f
+#define MIN_LENGTH 1.0f
 
 class TessendorfOcean : public SimpleObject2
 {
@@ -45,6 +49,7 @@ public:
 
     // From SimpleObject
     virtual void BuildMesh(TimeValue t);
+    virtual BOOL OKtoDisplay(TimeValue t);
     virtual void InvalidateUI();
 
     //From Animatable
@@ -103,7 +108,10 @@ enum {
     pb_wind_speed,
     pb_wind_direction,
     pb_choppiness,
-    pb_seed
+    pb_seed,
+    pb_time,
+    pb_duration,
+    pb_scale
 };
 
 
@@ -116,12 +124,12 @@ static ParamBlockDesc2 tessendorfocean_param_blk ( tessendorfocean_params, _T("p
     // params
     pb_width,			_T("width"),		TYPE_FLOAT,		P_ANIMATABLE,		IDS_WIDTH,
         p_default,		100.0f,
-        p_range,		0.1f,10000.0f,
+        p_range,		MIN_WIDTH,10000.0f,
         p_ui,			TYPE_SPINNER,		EDITTYPE_FLOAT,	IDC_WIDTH_EDIT,		IDC_WIDTH_SPIN,			0.1f,
         p_end,
     pb_length,			_T("length"),		TYPE_FLOAT,		P_ANIMATABLE,		IDS_LENGTH,
         p_default,		100.0f,
-        p_range,		0.1f,10000.0f,
+        p_range,	    MIN_LENGTH,10000.0f,
         p_ui,			TYPE_SPINNER,		EDITTYPE_FLOAT,	IDC_LENGTH_EDIT,	IDC_LENGTH_SPIN,		0.1f,
         p_end,
     pb_width_segs,		_T("width_segs"),	TYPE_FLOAT,		0,					IDS_WIDTH_SEGS,
@@ -134,9 +142,14 @@ static ParamBlockDesc2 tessendorfocean_param_blk ( tessendorfocean_params, _T("p
         p_range,		10.0f,1000.0f,
         p_ui,			TYPE_SPINNER,		EDITTYPE_INT,	IDC_LENGTH_SEGS_EDIT,IDC_LENGTH_SEGS_SPIN,	1.0f,
         p_end,
+    pb_scale,			_T("scale"),		TYPE_FLOAT,		P_ANIMATABLE,		IDS_SCALE,
+        p_default,		100.0f,
+        p_range,		MIN_WIDTH,10000.0f,
+        p_ui,			TYPE_SPINNER,		EDITTYPE_FLOAT,	IDC_SCALE_EDIT,		IDC_SCALE_SPIN,			0.1f,
+        p_end,
     pb_amplitude, 		_T("amplitude"), 	TYPE_FLOAT, 	P_ANIMATABLE, 		IDS_AMPLITUDE, 
         p_default, 		0.001f, 
-        p_range, 		0.0f,0.1f, 
+        p_range, 		0.0f,1.0f, 
         p_ui, 			TYPE_SPINNER,		EDITTYPE_FLOAT, IDC_AMPLITUDE_EDIT,	IDC_AMPLITUDE_SPIN,		0.001f, 
         p_end,
     pb_min_wave_size,	_T("min_wave_size"),TYPE_FLOAT,		P_ANIMATABLE,		IDS_MIN_SIZE,
@@ -162,6 +175,15 @@ static ParamBlockDesc2 tessendorfocean_param_blk ( tessendorfocean_params, _T("p
         p_default,		1.0f,
         p_range,		1.0f,4000000000.0f,
         p_ui,			TYPE_SPINNER,		EDITTYPE_FLOAT,	IDC_SEED_EDIT,		IDC_SEED_SPIN,			1.0f,
+        p_end,
+    pb_time,            _T("time"),         TYPE_FLOAT,     P_ANIMATABLE,       IDS_TIME,
+        p_default,      0.0f,
+        p_ui,           TYPE_SPINNER,       EDITTYPE_FLOAT, IDC_TIME_EDIT,      IDC_TIME_SPIN,          0.1f,
+        p_end,
+    pb_duration,		_T("duration"),	    TYPE_FLOAT,	    0,          		IDS_DURATION,
+        p_default,		60.0f, // 1 minute
+        p_range,		1.0f,3600.0f, // 1 hour
+        p_ui,			TYPE_SPINNER,		EDITTYPE_FLOAT,	IDC_DURATION_EDIT,  IDC_DURATION_SPIN,  	0.1f,
         p_end,
     p_end
     );
@@ -260,9 +282,20 @@ int TessendorfOceanCreateCallBack::proc(ViewExp *vpt,int msg, int point, int /*f
                 tessendorfocean_param_blk.InvalidateUI();
                 break;
             }
-            case 2:
+            case 2: // happens when user releases mouse
             {
-                return CREATE_STOP;
+                ob->suspendSnap = TRUE; 
+                p1 = vpt->SnapPoint(m,m,NULL,SNAP_IN_PLANE);
+                Point3 diff = p1 - p0;
+                
+                if (abs(diff.x) < MIN_WIDTH || abs(diff.y) < MIN_LENGTH)
+                {
+                    return CREATE_ABORT; // abort if the size is too small
+                }
+                else
+                {
+                    return CREATE_STOP;
+                }
             }
         }
     } else {
@@ -291,24 +324,82 @@ void TessendorfOcean::BuildMesh(TimeValue t)
     //      retrieving values from pblock2.
     ivalid = FOREVER;
 
-    float length, width;
-    pblock2->GetValue(pb_length, t, length, ivalid );
-    pblock2->GetValue(pb_width, t, width, ivalid );
+    float width, length, width_segs, length_segs,
+        amplitude, min_wave_size, wind_speed, wind_direction,
+        choppiness, seed, time, duration, scale;
+    pblock2->GetValue(pb_width, t, width, ivalid); // width = X-scale
+    pblock2->GetValue(pb_length, t, length, ivalid); // length = Y-scale
+    pblock2->GetValue(pb_width_segs, t, width_segs, ivalid); // width-segs = Y-res
+    pblock2->GetValue(pb_length_segs, t, length_segs, ivalid); // length-segs = X-res
+    pblock2->GetValue(pb_amplitude, t, amplitude, ivalid);
+    pblock2->GetValue(pb_min_wave_size, t, min_wave_size, ivalid);
+    pblock2->GetValue(pb_wind_speed, t, wind_speed, ivalid);
+    pblock2->GetValue(pb_wind_direction, t, wind_direction, ivalid); // In radians.
+    pblock2->GetValue(pb_choppiness, t, choppiness, ivalid);
+    pblock2->GetValue(pb_seed, t, seed, ivalid);
+    pblock2->GetValue(pb_time, t, time, ivalid);
+    pblock2->GetValue(pb_duration, t, duration, ivalid);
+    pblock2->GetValue(pb_scale, t, scale, ivalid);
 
-    mesh.setNumVerts(4);
-    mesh.setNumFaces(2);
-    mesh.setVert(0, -width / 2.0f, -length / 2.0f, 0.0f);
-    mesh.setVert(1, -width / 2.0f, length / 2.0f, 0.0f);
-    mesh.setVert(2, width / 2.0f, length / 2.0f, 0.0f);
-    mesh.setVert(3, width / 2.0f, -length / 2.0f, 0.0f);
-    mesh.faces[0].setVerts(0, 1, 2);
-    mesh.faces[0].setEdgeVisFlags(1,1,0);
-    mesh.faces[0].setSmGroup(0);
-    mesh.faces[1].setVerts(2, 3, 0);
-    mesh.faces[1].setEdgeVisFlags(1,1,0);
-    mesh.faces[1].setSmGroup(0);
+    Point3 wind_vector(cos(wind_direction), sin(wind_direction), 0.0f);
+    float factor = width / scale;
+    float scale_x = scale; // width / factor;
+    float scale_y = length / factor;
+    int faces_x = (int)length_segs;
+    int faces_y = (int)width_segs;
+    int vertices_x = faces_x + 1;
+    int vertices_y = faces_y + 1;
+
+    tessendorf sim(amplitude, wind_speed, wind_vector, choppiness, time, duration, vertices_x, vertices_y, scale_x, scale_y, min_wave_size, (int)seed);
+    Point3* vertices = sim.simulate();
     
+    mesh.setNumVerts(vertices_x * vertices_y);
+    mesh.setNumFaces(faces_x * faces_y * 2); // Double number of quads to make tris.
+
+    for (int i = 0; i < vertices_x; i++)
+    {
+        for (int j = 0; j < vertices_y; j++)
+        {
+            int index = i * vertices_y + j;
+            mesh.setVert(index, vertices[index] * factor);
+        }
+    }
+
+    int face = 0;
+    for (int i = 0; i < faces_x; i++)
+    {
+        for (int j = 0; j < faces_y; j++)
+        {
+            int pt1 = i * vertices_y + j;
+            int pt2 = i * vertices_y + j + 1;
+            int pt3 = (i+1) * vertices_y + j + 1;
+            int pt4 = (i+1) * vertices_y + j;
+
+            mesh.faces[face].setVerts(pt1, pt2, pt3);
+            mesh.faces[face].setEdgeVisFlags(1, 1, 0);
+            mesh.faces[face].setSmGroup(1);
+            ++face;
+
+            mesh.faces[face].setVerts(pt3, pt4, pt1);
+            mesh.faces[face].setEdgeVisFlags(1, 1, 0);
+            mesh.faces[face].setSmGroup(1);
+            ++face;
+        }
+    }
+
     mesh.InvalidateGeomCache();
+}
+
+BOOL TessendorfOcean::OKtoDisplay(TimeValue t)
+{
+    BOOL displayOk = TRUE;
+    float width = pblock2->GetFloat(pb_width, t);
+    float length = pblock2->GetFloat(pb_length, t);
+    if (width < MIN_WIDTH || length < MIN_LENGTH) {
+        // Do not display when size is not valid.
+        displayOk = FALSE;
+    }
+    return displayOk;
 }
 
 void TessendorfOcean::InvalidateUI() 

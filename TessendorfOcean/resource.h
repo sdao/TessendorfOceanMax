@@ -17,6 +17,9 @@
 #define IDS_DIRECTION                   12
 #define IDS_CHOPPINESS                  13
 #define IDS_SEED                        14
+#define IDS_TIME                        15
+#define IDS_DURATION                    16
+#define IDS_SCALE                       17
 #define IDD_PANEL                       101
 #define IDC_CLOSEBUTTON                 1000
 #define IDC_DOSTUFF                     1000
@@ -31,6 +34,8 @@
 #define IDC_CHOPPINESS_EDIT             1008
 #define IDC_SEED_EDIT                   1009
 #define IDC_TIME_EDIT                   1010
+#define IDC_DURATION_EDIT               1011
+#define IDC_SCALE_EDIT                  1012
 #define IDC_COLOR                       1456
 #define IDC_EDIT                        1490
 #define IDC_SPIN                        1496
@@ -44,6 +49,10 @@
 #define IDC_DIRECTION_SPIN              1503
 #define IDC_CHOPPINESS_SPIN             1504
 #define IDC_SEED_SPIN                   1505
+#define IDC_TIME_SPIN                   1506
+#define IDC_DURATION_SPIN               1507
+#define INT_SCALE_SPIN                  1508
+#define IDC_SCALE_SPIN                  1508
 
 // Next default values for new objects
 // 

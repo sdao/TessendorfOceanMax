@@ -24,7 +24,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Dialog
 //
 
-IDD_PANEL DIALOGEX 0, 0, 108, 152
+IDD_PANEL DIALOGEX 0, 0, 108, 197
 STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -40,24 +40,33 @@ BEGIN
     LTEXT           "Length Segs:",IDC_STATIC,7,46,43,8
     CONTROL         "",IDC_LENGTH_SEGS_EDIT,"CustEdit",WS_TABSTOP,58,46,35,10
     CONTROL         "",IDC_LENGTH_SEGS_SPIN,"SpinnerControl",0x0,94,46,7,10
-    LTEXT           "Amplitude:",IDC_STATIC,7,66,34,8
-    CONTROL         "",IDC_AMPLITUDE_EDIT,"CustEdit",WS_TABSTOP,58,66,35,10
-    CONTROL         "",IDC_AMPLITUDE_SPIN,"SpinnerControl",0x0,94,66,7,10
-    LTEXT           "Min Size:",IDC_STATIC,7,79,30,8
-    CONTROL         "",IDC_MIN_SIZE_EDIT,"CustEdit",WS_TABSTOP,58,79,35,10
-    CONTROL         "",IDC_MIN_SIZE_SPIN,"SpinnerControl",0x0,94,79,7,10
-    LTEXT           "Speed:",IDC_STATIC,7,92,24,8
-    CONTROL         "",IDC_SPEED_EDIT,"CustEdit",WS_TABSTOP,58,92,35,10
-    CONTROL         "",IDC_SPEED_SPIN,"SpinnerControl",0x0,94,92,7,10
-    LTEXT           "Direction:",IDC_STATIC,7,106,31,8
-    CONTROL         "",IDC_DIRECTION_EDIT,"CustEdit",WS_TABSTOP,58,106,35,10
-    CONTROL         "",IDC_DIRECTION_SPIN,"SpinnerControl",0x0,94,106,7,10
-    LTEXT           "Choppiness:",IDC_STATIC,7,119,40,8
-    CONTROL         "",IDC_CHOPPINESS_EDIT,"CustEdit",WS_TABSTOP,58,119,35,10
-    CONTROL         "",IDC_CHOPPINESS_SPIN,"SpinnerControl",0x0,94,119,7,10
-    LTEXT           "Seed:",IDC_STATIC,7,132,20,8
-    CONTROL         "",IDC_SEED_EDIT,"CustEdit",WS_TABSTOP,58,132,35,10
-    CONTROL         "",IDC_SEED_SPIN,"SpinnerControl",0x0,94,132,7,10
+    LTEXT           "Scale:",IDC_STATIC,7,59,21,8
+    CONTROL         "",IDC_SCALE_EDIT,"CustEdit",WS_TABSTOP,58,59,35,10
+    CONTROL         "",IDC_SCALE_SPIN,"SpinnerControl",0x0,94,59,7,10
+    LTEXT           "Amplitude:",IDC_STATIC,7,79,34,8
+    CONTROL         "",IDC_AMPLITUDE_EDIT,"CustEdit",WS_TABSTOP,58,79,35,10
+    CONTROL         "",IDC_AMPLITUDE_SPIN,"SpinnerControl",0x0,94,79,7,10
+    LTEXT           "Min Size:",IDC_STATIC,7,92,30,8
+    CONTROL         "",IDC_MIN_SIZE_EDIT,"CustEdit",WS_TABSTOP,58,92,35,10
+    CONTROL         "",IDC_MIN_SIZE_SPIN,"SpinnerControl",0x0,94,92,7,10
+    LTEXT           "Speed:",IDC_STATIC,7,105,24,8
+    CONTROL         "",IDC_SPEED_EDIT,"CustEdit",WS_TABSTOP,58,105,35,10
+    CONTROL         "",IDC_SPEED_SPIN,"SpinnerControl",0x0,94,105,7,10
+    LTEXT           "Direction:",IDC_STATIC,7,119,31,8
+    CONTROL         "",IDC_DIRECTION_EDIT,"CustEdit",WS_TABSTOP,58,119,35,10
+    CONTROL         "",IDC_DIRECTION_SPIN,"SpinnerControl",0x0,94,119,7,10
+    LTEXT           "Choppiness:",IDC_STATIC,7,132,40,8
+    CONTROL         "",IDC_CHOPPINESS_EDIT,"CustEdit",WS_TABSTOP,58,132,35,10
+    CONTROL         "",IDC_CHOPPINESS_SPIN,"SpinnerControl",0x0,94,132,7,10
+    LTEXT           "Seed:",IDC_STATIC,7,145,20,8
+    CONTROL         "",IDC_SEED_EDIT,"CustEdit",WS_TABSTOP,58,145,35,10
+    CONTROL         "",IDC_SEED_SPIN,"SpinnerControl",0x0,94,145,7,10
+    LTEXT           "Time:",IDC_STATIC,7,165,18,8
+    CONTROL         "",IDC_TIME_EDIT,"CustEdit",WS_TABSTOP,58,165,35,10
+    CONTROL         "",IDC_TIME_SPIN,"SpinnerControl",0x0,94,165,7,10
+    LTEXT           "Duration:",IDC_STATIC,7,179,30,8
+    CONTROL         "",IDC_DURATION_EDIT,"CustEdit",WS_TABSTOP,58,179,35,10
+    CONTROL         "",IDC_DURATION_SPIN,"SpinnerControl",0x0,94,179,7,10
 END
 
 
@@ -74,17 +83,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 101
         TOPMARGIN, 7
-        BOTTOMMARGIN, 145
-        HORZGUIDE, 20
-        HORZGUIDE, 33
-        HORZGUIDE, 46
-        HORZGUIDE, 66
-        HORZGUIDE, 79
-        HORZGUIDE, 92
-        HORZGUIDE, 106
-        HORZGUIDE, 119
-        HORZGUIDE, 132
-        HORZGUIDE, 145
+        BOTTOMMARGIN, 190
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -137,6 +136,13 @@ BEGIN
     IDS_DIRECTION           "Wind Direction"
     IDS_CHOPPINESS          "Choppiness"
     IDS_SEED                "Seed"
+    IDS_TIME                "Time"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_DURATION            "Duration"
+    IDS_SCALE               "Scale"
 END
 
 #endif    // English (United States) resources
