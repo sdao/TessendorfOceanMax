@@ -99,11 +99,11 @@ enum { tessendorfocean_params };
 
 //TODO: Add enums for various parameters
 enum { 
-    pb_width,
-    pb_length,
-    pb_width_segs,
-    pb_length_segs,
-    pb_amplitude,
+    pb_width, // width of plane (doesn't affect simulation)
+    pb_length, // length of plane (doesn't affect simulation)
+    pb_width_segs, // Y-resolution
+    pb_length_segs, // X-resolution
+    pb_amplitude, 
     pb_min_wave_size,
     pb_wind_speed,
     pb_wind_direction,
@@ -111,7 +111,7 @@ enum {
     pb_seed,
     pb_time,
     pb_duration,
-    pb_scale
+    pb_scale // actually affects size in the simulation
 };
 
 
@@ -343,7 +343,7 @@ void TessendorfOcean::BuildMesh(TimeValue t)
 
     Point3 wind_vector(cos(wind_direction), sin(wind_direction), 0.0f);
     float factor = width / scale;
-    float scale_x = scale; // width / factor;
+    float scale_x = scale; // (scale_x = width / factor) but we can simplify since scale should be the scale_x
     float scale_y = length / factor;
     int faces_x = (int)length_segs;
     int faces_y = (int)width_segs;
