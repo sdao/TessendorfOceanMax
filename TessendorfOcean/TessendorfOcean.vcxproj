@@ -47,14 +47,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="kiss_fft130\kiss_fft.c" />
+    <ClCompile Include="tessendorf.cpp" />
     <ClCompile Include="TessendorfOcean.cpp" />
     <ClCompile Include="DllEntry.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="kiss_fft130\kissfft.hh">
+      <FileType>CppHeader</FileType>
+    </None>
     <None Include="TessendorfOcean.def" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3dsmaxsdk_preinclude.h" />
+    <ClInclude Include="helpers.h" />
+    <ClInclude Include="kiss_fft130\kiss_fft.h" />
+    <ClInclude Include="kiss_fft130\_kiss_fft_guts.h" />
+    <ClInclude Include="tessendorf.h" />
     <ClInclude Include="TessendorfOcean.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
