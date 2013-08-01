@@ -327,8 +327,8 @@ void TessendorfOcean::BuildMesh(TimeValue t)
     float width, length, width_segs, length_segs,
         amplitude, min_wave_size, wind_speed, wind_direction,
         choppiness, seed, time, duration, scale;
-    pblock2->GetValue(pb_width, t, width, ivalid); // width = X-scale
-    pblock2->GetValue(pb_length, t, length, ivalid); // length = Y-scale
+    pblock2->GetValue(pb_width, t, width, ivalid); // width = plane X width
+    pblock2->GetValue(pb_length, t, length, ivalid); // length = plane Y length
     pblock2->GetValue(pb_width_segs, t, width_segs, ivalid); // width-segs = Y-res
     pblock2->GetValue(pb_length_segs, t, length_segs, ivalid); // length-segs = X-res
     pblock2->GetValue(pb_amplitude, t, amplitude, ivalid);
@@ -339,12 +339,12 @@ void TessendorfOcean::BuildMesh(TimeValue t)
     pblock2->GetValue(pb_seed, t, seed, ivalid);
     pblock2->GetValue(pb_time, t, time, ivalid);
     pblock2->GetValue(pb_duration, t, duration, ivalid);
-    pblock2->GetValue(pb_scale, t, scale, ivalid);
+    pblock2->GetValue(pb_scale, t, scale, ivalid); // scale = scale X used in simulation
 
     Point3 wind_vector(cos(wind_direction), sin(wind_direction), 0.0f);
     float factor = width / scale;
     float scale_x = scale; // (scale_x = width / factor) but we can simplify since scale should be the scale_x
-    float scale_y = length / factor;
+    float scale_y = length / factor; // automatically calculate to preserve aspect ratio
     int faces_x = (int)length_segs;
     int faces_y = (int)width_segs;
     int vertices_x = faces_x + 1;
