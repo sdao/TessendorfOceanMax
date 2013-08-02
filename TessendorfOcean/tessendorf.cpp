@@ -120,8 +120,8 @@ Point3* tessendorf::simulate()
             int index = m * N + n;
             int sign = signs[(m + n) & 1]; // Sign-flip all of the odd coefficients.
 
-            int m_ = m - M / 2;  // m coord offsetted.
-            int n_ = n - N / 2;  // n coord offsetted.
+            float m_ = m - M / 2.0f;  // m coord offsetted.
+            float n_ = n - N / 2.0f;  // n coord offsetted.
 
             Point3 x(n_ * Lx / N + real(disp_x_out[index]) * lambda * sign,
                 m_ * Ly / M + real(disp_y_out[index]) * lambda * sign,
