@@ -55,9 +55,6 @@
     <ClInclude Include="kiss_fft130\kiss_fft.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="helpers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TessendorfOcean.rc">

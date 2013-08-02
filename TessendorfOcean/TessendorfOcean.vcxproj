@@ -60,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3dsmaxsdk_preinclude.h" />
-    <ClInclude Include="helpers.h" />
     <ClInclude Include="kiss_fft130\kiss_fft.h" />
     <ClInclude Include="kiss_fft130\_kiss_fft_guts.h" />
     <ClInclude Include="tessendorf.h" />

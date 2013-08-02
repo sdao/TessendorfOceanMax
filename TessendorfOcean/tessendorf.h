@@ -1,4 +1,5 @@
 #include <complex>
+#include <random>
 #include <point3.h>
 
 #define GRAVITY 9.8 // Acceleration due to gravity (m/s^2).
@@ -13,6 +14,9 @@ typedef std::complex<float> complex;
 * This class assumes the 3ds Max coordinate system, i.e. X- and Y-axes are in the horizontal plane and the Z-axis goes up and down.
 */
 class tessendorf {
+    std::tr1::mt19937 engine;
+    std::tr1::normal_distribution<float> dist;
+
     float               omega_0;                    /* Dispersion-sub-naught; calculated using Tessendorf's equation (17). */
     int                 M;                          /* Resolution of grid along X-axis (16 <= M <= 2048; where M = 2^x for integer x). */
     int                 N;                          /* Resolution of grid Y-axis (16 <= N <= 2048; where N = 2^y for integer y). */
@@ -25,7 +29,7 @@ class tessendorf {
     float               lambda;                     /* Choppiness factor. */
     float               t;                          /* Time (in s). */
     float               T;                          /* Time of one phase of simulation. */
-    int                 seed;                       /* Seed for the pseudorandom number generator. */
+    unsigned long       seed;                       /* Seed for the pseudorandom number generator. */
 
     Point3*             vertices;
     complex*            h_tildes_in;
@@ -55,7 +59,7 @@ public:
     * \param waveSizeLimit size limit that waves must surpass to be rendered
     * \param rngSeed seed for the pseudorandom number generator
     */
-    tessendorf(float amplitude, float speed, Point3 direction, float choppiness, float time, float phaseDuration, int resX, int resY, float scaleX, float scaleY, float waveSizeLimit, int rngSeed);
+    tessendorf(float amplitude, float speed, Point3 direction, float choppiness, float time, float phaseDuration, int resX, int resY, float scaleX, float scaleY, float waveSizeLimit, unsigned long rngSeed);
     
     ~tessendorf();
 

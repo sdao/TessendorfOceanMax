@@ -352,7 +352,7 @@ void TessendorfOcean::BuildMesh(TimeValue t)
     int numVerts = vertices_x * vertices_y;
     int numFaces = faces_x * faces_y * 2; // Double number of quads to make tris.
 
-    tessendorf sim(amplitude, wind_speed, wind_vector, choppiness, time, duration, vertices_x, vertices_y, scale_x, scale_y, min_wave_size, (int)seed);
+    tessendorf sim(amplitude, wind_speed, wind_vector, choppiness, time, duration, vertices_x, vertices_y, scale_x, scale_y, min_wave_size, (unsigned long)seed);
     Point3* vertices = sim.simulate();
     
     mesh.setNumVerts(numVerts);

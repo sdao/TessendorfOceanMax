@@ -2,10 +2,9 @@
 #include <cmath>
 
 #include "tessendorf.h"
-#include "helpers.h"
 #include "kiss_fft130/kissfft.hh"
 
-tessendorf::tessendorf(float amplitude, float speed, Point3 direction, float choppiness, float time, float phaseDuration, int resX, int resY, float scaleX, float scaleY, float waveSizeLimit, int rngSeed)
+tessendorf::tessendorf(float amplitude, float speed, Point3 direction, float choppiness, float time, float phaseDuration, int resX, int resY, float scaleX, float scaleY, float waveSizeLimit, unsigned long rngSeed)
 {
     // Parameters.
     A = amplitude;
@@ -22,6 +21,7 @@ tessendorf::tessendorf(float amplitude, float speed, Point3 direction, float cho
     omega_0 = 2. * M_PI / T;
     seed = rngSeed;
     vertices = new Point3[M*N];
+    engine = std::tr1::mt19937();
 
     // Precalculate known constants.
     P_h__L = pow(V, 2) / GRAVITY;
@@ -57,9 +57,7 @@ float tessendorf::P_h(Point3 k)
 
 complex tessendorf::h_tilde_0(Point3 k)
 {
-    complex xi = random_gaussian_complex();
-
-    return xi * (float)sqrt(P_h(k) / 2.);
+    return complex(dist(engine), dist(engine)) * (float)sqrt(P_h(k) / 2.);
 }
 
 complex tessendorf::h_tilde(Point3 k)
@@ -80,7 +78,7 @@ complex tessendorf::h_tilde(Point3 k)
 
 Point3* tessendorf::simulate()
 {
-    srand(seed);
+    engine.seed(seed);
 
     complex* h_tildes_in = new complex[M*N];
     complex* disp_x_in = new complex[M*N];
