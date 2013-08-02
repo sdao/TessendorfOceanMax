@@ -24,16 +24,10 @@
     <ClCompile Include="tessendorf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="kiss_fft130\kiss_fft.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="TessendorfOcean.def">
       <Filter>Source Files</Filter>
-    </None>
-    <None Include="kiss_fft130\kissfft.hh">
-      <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -47,12 +41,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tessendorf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="kiss_fft130\_kiss_fft_guts.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="kiss_fft130\kiss_fft.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

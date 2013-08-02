@@ -1,8 +1,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
-
+#include <fftw3.h>
 #include "tessendorf.h"
-#include "kiss_fft130/kissfft.hh"
 
 tessendorf::tessendorf(float amplitude, float speed, Point3 direction, float choppiness, float time, float phaseDuration, int resX, int resY, float scaleX, float scaleY, float waveSizeLimit, unsigned long rngSeed)
 {
@@ -106,10 +105,22 @@ Point3* tessendorf::simulate()
         }
     }
 
-    kissfft<float> fft(M*N, false);
-    fft.transform(h_tildes_in, h_tildes_out);
-    fft.transform(disp_x_in, disp_x_out);
-    fft.transform(disp_y_in, disp_y_out);
+    //kissfft<float> fft(M*N, false);
+    //fft.transform(h_tildes_in, h_tildes_out);
+    //fft.transform(disp_x_in, disp_x_out);
+    //fft.transform(disp_y_in, disp_y_out);
+
+    fftwf_plan p_h = fftwf_plan_dft_1d(M*N, reinterpret_cast<fftwf_complex*>(h_tildes_in), reinterpret_cast<fftwf_complex*>(h_tildes_out), FFTW_FORWARD, FFTW_ESTIMATE);
+    fftwf_plan p_dx = fftwf_plan_dft_1d(M*N, reinterpret_cast<fftwf_complex*>(disp_x_in), reinterpret_cast<fftwf_complex*>(disp_x_out), FFTW_FORWARD, FFTW_ESTIMATE);
+    fftwf_plan p_dy = fftwf_plan_dft_1d(M*N, reinterpret_cast<fftwf_complex*>(disp_y_in), reinterpret_cast<fftwf_complex*>(disp_y_out), FFTW_FORWARD, FFTW_ESTIMATE);
+    
+    fftwf_execute(p_h);
+    fftwf_execute(p_dx);
+    fftwf_execute(p_dy);
+
+    fftwf_destroy_plan(p_h);
+    fftwf_destroy_plan(p_dx);
+    fftwf_destroy_plan(p_dy);
 
     float signs[2] = { -1., 1. };
 
