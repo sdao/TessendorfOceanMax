@@ -357,10 +357,19 @@ void TessendorfOcean::BuildMesh(TimeValue t)
     
     mesh.setNumVerts(numVerts);
     mesh.setNumFaces(numFaces);
+    mesh.setNumTVerts(numVerts);
+    mesh.setNumTVFaces(numFaces);
 
-    for (int vtx = 0; vtx < numVerts; vtx++)
+    int vtx = 0;
+    float max_u = (float)faces_x, max_v = (float)faces_y;
+    for (int i = 0; i < vertices_x; i++)
     {
-        mesh.setVert(vtx, vertices[vtx] * factor);
+        for (int j = 0; j < vertices_y; j++)
+        {
+            mesh.setVert(vtx, vertices[vtx] * factor);
+            mesh.setTVert(vtx, i / max_u, j / max_v, 0.0f);
+            ++vtx;
+        }
     }
 
     int face = 0;
@@ -376,11 +385,13 @@ void TessendorfOcean::BuildMesh(TimeValue t)
             mesh.faces[face].setVerts(pt1, pt2, pt3);
             mesh.faces[face].setEdgeVisFlags(1, 1, 0);
             mesh.faces[face].setSmGroup(1);
+            mesh.tvFace[face].setTVerts(pt1, pt2, pt3);
             ++face;
 
             mesh.faces[face].setVerts(pt3, pt4, pt1);
             mesh.faces[face].setEdgeVisFlags(1, 1, 0);
             mesh.faces[face].setSmGroup(1);
+            mesh.tvFace[face].setTVerts(pt3, pt4, pt1);
             ++face;
         }
     }
