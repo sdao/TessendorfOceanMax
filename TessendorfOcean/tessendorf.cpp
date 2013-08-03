@@ -105,11 +105,6 @@ Point3* tessendorf::simulate()
         }
     }
 
-    //kissfft<float> fft(M*N, false);
-    //fft.transform(h_tildes_in, h_tildes_out);
-    //fft.transform(disp_x_in, disp_x_out);
-    //fft.transform(disp_y_in, disp_y_out);
-
     fftwf_plan p_h = fftwf_plan_dft_1d(M*N, reinterpret_cast<fftwf_complex*>(h_tildes_in), reinterpret_cast<fftwf_complex*>(h_tildes_out), FFTW_FORWARD, FFTW_ESTIMATE);
     fftwf_plan p_dx = fftwf_plan_dft_1d(M*N, reinterpret_cast<fftwf_complex*>(disp_x_in), reinterpret_cast<fftwf_complex*>(disp_x_out), FFTW_FORWARD, FFTW_ESTIMATE);
     fftwf_plan p_dy = fftwf_plan_dft_1d(M*N, reinterpret_cast<fftwf_complex*>(disp_y_in), reinterpret_cast<fftwf_complex*>(disp_y_out), FFTW_FORWARD, FFTW_ESTIMATE);
